@@ -11,7 +11,14 @@ def matrix():
                 break
 
             mirrored_frame = cv2.flip(frame, 1)
-            cv2.imshow('cam capture', mirrored_frame)
+
+            gray_frame = cv2.cvtColor(mirrored_frame, cv2.COLOR_BGR2GRAY)
+
+            # for test
+            cv2.imshow('cam capture', gray_frame)
+
+
+
             if cv2.waitKey(1) == ord('q'):
                 break
     else:
