@@ -10,7 +10,8 @@ def matrix():
                 print("[Error] Cannot read frame from video capture")
                 break
 
-            cv2.imshow('cam capture', frame)
+            mirrored_frame = cv2.flip(frame, 1)
+            cv2.imshow('cam capture', mirrored_frame)
             if cv2.waitKey(1) == ord('q'):
                 break
     else:
