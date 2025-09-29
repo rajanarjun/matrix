@@ -1,8 +1,11 @@
 #!.venv/bin/python
 import cv2
+import shutil
 
+terminal_size = shutil.get_terminal_size()
+terminal_width = terminal_size.columns
 
-ascii_art_width = 150
+ascii_art_width = terminal_width
 
 # terminal chars are ~2:1 (height:width)
 aspect_correction = 0.5 
