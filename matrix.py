@@ -4,7 +4,9 @@ import cv2
 
 terminal_width = 150
 aspect_correction = 0.5 # terminal chars are ~2:1 (height:width)
-
+green_color_code = "\033[1;32m"
+default_color_code = "\033[0m"
+ascii_ramp = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. "
 
 def redraw_screen():
     print("\x1b[2J\x1b[H", end="")
@@ -12,8 +14,7 @@ def redraw_screen():
 
 def frame_to_terminal_ascii(image):
 
-    ASCII_RAMP = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. "
-    ramp_len = len(ASCII_RAMP) - 1
+    ramp_len = len(ascii_ramp) - 1
 
     row, col = image.shape
 
@@ -21,8 +22,8 @@ def frame_to_terminal_ascii(image):
         row_str = ""
         for c in range(col):
             index = int((image[r][c] / 255) * ramp_len)
-            row_str += ASCII_RAMP[index]
-        print(row_str)
+            row_str += ascii_ramp[index]
+        print(green_color_code + row_str + default_color_code)
         
 
 def matrix():
