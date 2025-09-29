@@ -1,6 +1,29 @@
 #!.venv/bin/python
 import cv2
 
+
+terminal_width = 120
+
+
+def redraw_screen():
+    print("\x1b[2J\x1b[H", end="")
+
+
+def frame_to_terminal_ascii(image):
+
+    ASCII_RAMP = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. "
+    ramp_len = len(ASCII_RAMP) - 1
+
+    row, col = image.shape
+
+    for r in range(row):
+        row_str = ""
+        for c in range(col):
+            index = int((image[r][c] / 255) * ramp_len)
+            row_str += ASCII_RAMP[index]
+        print(row_str)
+        
+
 def matrix():
     cap = cv2.VideoCapture(0)
     if cap.isOpened():
@@ -14,10 +37,18 @@ def matrix():
 
             gray_frame = cv2.cvtColor(mirrored_frame, cv2.COLOR_BGR2GRAY)
 
+            original_height, original_width = gray_frame.shape
+            scale = terminal_width / original_width
+            terminal_height = int(original_height * scale)
+
+            resized_frame = cv2.resize(gray_frame, (terminal_width, terminal_height))
+
+            frame_to_terminal_ascii(resized_frame)
+
+            redraw_screen()
+
             # for test
-            cv2.imshow('cam capture', gray_frame)
-
-
+            #cv2.imshow('cam capture', gray_frame)
 
             if cv2.waitKey(1) == ord('q'):
                 break
