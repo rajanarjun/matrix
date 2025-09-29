@@ -60,6 +60,9 @@ def matrix():
 
     except KeyboardInterrupt:
         print("Exiting matrix..")
+    except Exception as e:
+        print("Exception occured: ",e)
+        print("Exiting matrix..")
     finally:
         cap.release()
         cv2.destroyAllWindows()
