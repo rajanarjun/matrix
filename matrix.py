@@ -2,7 +2,8 @@
 import cv2
 
 
-terminal_width = 120
+terminal_width = 150
+aspect_correction = 0.5 # terminal chars are ~2:1 (height:width)
 
 
 def redraw_screen():
@@ -25,38 +26,43 @@ def frame_to_terminal_ascii(image):
         
 
 def matrix():
-    cap = cv2.VideoCapture(0)
-    if cap.isOpened():
-        while True:
-            ret, frame = cap.read()
-            if not ret:
-                print("[Error] Cannot read frame from video capture")
-                break
 
-            mirrored_frame = cv2.flip(frame, 1)
+    try:
+        cap = cv2.VideoCapture(0)
 
-            gray_frame = cv2.cvtColor(mirrored_frame, cv2.COLOR_BGR2GRAY)
+        if not cap.isOpened():
+            print("[Error] Cannot open camera")
+        else:
+            while True:
+                ret, frame = cap.read()
+                if not ret:
+                    print("[Error] Cannot read frame from video capture")
+                    break
 
-            original_height, original_width = gray_frame.shape
-            scale = terminal_width / original_width
-            terminal_height = int(original_height * scale)
+                mirrored_frame = cv2.flip(frame, 1)
 
-            resized_frame = cv2.resize(gray_frame, (terminal_width, terminal_height))
+                gray_frame = cv2.cvtColor(mirrored_frame, cv2.COLOR_BGR2GRAY)
 
-            frame_to_terminal_ascii(resized_frame)
+                original_height, original_width = gray_frame.shape
+                scale = terminal_width / original_width
+                terminal_height = int(original_height * scale * aspect_correction)
 
-            redraw_screen()
+                resized_frame = cv2.resize(gray_frame, (terminal_width, terminal_height))
 
-            # for test
-            #cv2.imshow('cam capture', gray_frame)
+                frame_to_terminal_ascii(resized_frame)
 
-            if cv2.waitKey(1) == ord('q'):
-                break
-    else:
-        print("[Error] Cannot open camera")
+                redraw_screen()
 
-    cap.release()
-    cv2.destroyAllWindows()
+                # for test
+                #cv2.imshow('cam capture', gray_frame)
+                #if cv2.waitKey(1) == ord('q'):
+                    #break
+
+    except KeyboardInterrupt:
+        print("Exiting matrix..")
+    finally:
+        cap.release()
+        cv2.destroyAllWindows()
         
 if __name__ == "__main__":
     matrix()
