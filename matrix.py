@@ -2,35 +2,42 @@
 import cv2
 
 
-terminal_width = 150
-aspect_correction = 0.5 # terminal chars are ~2:1 (height:width)
+ascii_art_width = 150
+
+# terminal chars are ~2:1 (height:width)
+aspect_correction = 0.5 
+
 green_color_code = "\033[1;32m"
 default_color_code = "\033[0m"
-ascii_ramp = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. "
+
+ascii_ramp_1 = " .:-=+*#%@"
+ascii_ramp_2 = " .'`^\",:;Il!i~+_-?][}{1)(|\\/*tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$"
+ascii_ramp_3 = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/()1{}[]?-_+~<>i!lI;:,\"^`'. "
+
+ramp_len = len(ascii_ramp_1) - 1
+
 
 def redraw_screen():
+    print("\x1b[H", end="")
+
+
+def clear_screen():
     print("\x1b[2J\x1b[H", end="")
 
 
 def frame_to_terminal_ascii(image):
-
-    ramp_len = len(ascii_ramp) - 1
-
     row, col = image.shape
-
     for r in range(row):
         row_str = ""
         for c in range(col):
             index = int((image[r][c] / 255) * ramp_len)
-            row_str += ascii_ramp[index]
+            row_str += ascii_ramp_1[index]
         print(green_color_code + row_str + default_color_code)
         
 
 def matrix():
-
     try:
         cap = cv2.VideoCapture(0)
-
         if not cap.isOpened():
             print("[Error] Cannot open camera")
         else:
@@ -45,10 +52,10 @@ def matrix():
                 gray_frame = cv2.cvtColor(mirrored_frame, cv2.COLOR_BGR2GRAY)
 
                 original_height, original_width = gray_frame.shape
-                scale = terminal_width / original_width
-                terminal_height = int(original_height * scale * aspect_correction)
+                scale = ascii_art_width / original_width
+                ascii_art_height = int(original_height * scale * aspect_correction)
 
-                resized_frame = cv2.resize(gray_frame, (terminal_width, terminal_height))
+                resized_frame = cv2.resize(gray_frame, (ascii_art_width, ascii_art_height))
 
                 frame_to_terminal_ascii(resized_frame)
 
@@ -67,6 +74,8 @@ def matrix():
     finally:
         cap.release()
         cv2.destroyAllWindows()
+        clear_screen()
         
+
 if __name__ == "__main__":
     matrix()
