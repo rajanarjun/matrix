@@ -1,23 +1,26 @@
 #!.venv/bin/python
 import cv2
 import shutil
+import numpy as np
 
+# terminal related stuff
 terminal_size = shutil.get_terminal_size()
 terminal_width = terminal_size.columns
-
 ascii_art_width = terminal_width
-
 # terminal chars are ~2:1 (height:width)
 aspect_correction = 0.5 
 
+# colors and ascii related stuff
 green_color_code = "\033[1;32m"
 default_color_code = "\033[0m"
-
 ascii_ramp_1 = " .:-=+*#%@"
 ascii_ramp_2 = " .'`^\",:;Il!i~+_-?][}{1)(|\\/*tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$"
 ascii_ramp_3 = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/()1{}[]?-_+~<>i!lI;:,\"^`'. "
 
-ramp_len = len(ascii_ramp_1) - 1
+# globals
+ascii_ramp = ascii_ramp_1
+ramp_len = len(ascii_ramp) - 1
+lookup = np.full(256, '', dtype='U')
 
 
 def redraw_screen():
@@ -28,15 +31,23 @@ def clear_screen():
     print("\x1b[2J\x1b[H", end="")
 
 
-def frame_to_terminal_ascii(image):
-    row, col = image.shape
+def create_lookup_table():
+    for i in range(256):
+        index = int((i / 255) * ramp_len)
+        lookup[i] = ascii_ramp[index]
+
+
+def frame_to_terminal_ascii(gray_image):
+    all_rows = []
+    ascii_frame = lookup[gray_image]
+    row = ascii_frame.shape[0]
     for r in range(row):
-        row_str = ""
-        for c in range(col):
-            index = int((image[r][c] / 255) * ramp_len)
-            row_str += ascii_ramp_1[index]
-        print(green_color_code + row_str + default_color_code)
-        
+        row_str = "".join(ascii_frame[r])
+        all_rows.append(row_str)
+    ascii_image_str = "\n".join(all_rows)
+    ascii_image = green_color_code + ascii_image_str + default_color_code
+    print(ascii_image)
+    
 
 def matrix():
     try:
@@ -71,9 +82,6 @@ def matrix():
 
     except KeyboardInterrupt:
         print("Exiting matrix..")
-    except Exception as e:
-        print("Exception occured: ",e)
-        print("Exiting matrix..")
     finally:
         cap.release()
         cv2.destroyAllWindows()
@@ -81,4 +89,5 @@ def matrix():
         
 
 if __name__ == "__main__":
+    create_lookup_table()
     matrix()
