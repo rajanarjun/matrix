@@ -2,6 +2,7 @@
 import cv2
 import shutil
 import numpy as np
+from time import sleep
 
 # terminal related stuff
 terminal_size = shutil.get_terminal_size()
@@ -90,4 +91,5 @@ def matrix():
 
 if __name__ == "__main__":
     create_lookup_table()
+    sleep(0.5)
     matrix()
