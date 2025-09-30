@@ -21,7 +21,7 @@ ascii_ramp_3 = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/()1{}[]?-_+~<>i!lI;:,\"
 # globals
 ascii_ramp = ascii_ramp_1
 ramp_len = len(ascii_ramp) - 1
-lookup = np.full(256, '', dtype='U')
+ascii_lookup = np.full(256, '', dtype='U')
 
 
 def redraw_screen():
@@ -35,12 +35,12 @@ def clear_screen():
 def create_lookup_table():
     for i in range(256):
         index = int((i / 255) * ramp_len)
-        lookup[i] = ascii_ramp[index]
+        ascii_lookup[i] = ascii_ramp[index]
 
 
 def frame_to_terminal_ascii(gray_image):
     all_rows = []
-    ascii_frame = lookup[gray_image]
+    ascii_frame = ascii_lookup[gray_image]
     row = ascii_frame.shape[0]
     for r in range(row):
         row_str = "".join(ascii_frame[r])
