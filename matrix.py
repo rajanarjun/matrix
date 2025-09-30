@@ -1,25 +1,22 @@
 #!.venv/bin/python
+import configparser
 import cv2
 import shutil
 import numpy as np
 from time import sleep
 
-# terminal related stuff
+config = configparser.ConfigParser(interpolation=None)
+config.read("config.ini")
+
+green_color_code = config["color_codes"]["GREEN_COLOR_CODE"].encode().decode("unicode_escape")
+default_color_code = config["color_codes"]["DEFAULT_COLOR_CODE"].encode().decode("unicode_escape")
+ascii_ramp = str(config["ascii_ramps"]["ASCII_RAMP_1"])
+aspect_correction = float(config["terminal"]["ASPECT_CORRECTION"])
+
 terminal_size = shutil.get_terminal_size()
 terminal_width = terminal_size.columns
 ascii_art_width = terminal_width
-# terminal chars are ~2:1 (height:width)
-aspect_correction = 0.5 
 
-# colors and ascii related stuff
-green_color_code = "\033[1;32m"
-default_color_code = "\033[0m"
-ascii_ramp_1 = " .:-=+*#%@"
-ascii_ramp_2 = " .'`^\",:;Il!i~+_-?][}{1)(|\\/*tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$"
-ascii_ramp_3 = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/()1{}[]?-_+~<>i!lI;:,\"^`'. "
-
-# globals
-ascii_ramp = ascii_ramp_1
 ramp_len = len(ascii_ramp) - 1
 ascii_lookup = np.full(256, '', dtype='U')
 
