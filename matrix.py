@@ -8,8 +8,12 @@ from time import sleep
 config = configparser.ConfigParser(interpolation=None)
 config.read("config.ini")
 
-green_color_code = config["color_codes"]["GREEN_COLOR_CODE"].encode().decode("unicode_escape")
-default_color_code = config["color_codes"]["DEFAULT_COLOR_CODE"].encode().decode("unicode_escape")
+green_color_code = (
+    config["color_codes"]["GREEN_COLOR_CODE"].encode().decode("unicode_escape")
+)
+default_color_code = (
+    config["color_codes"]["DEFAULT_COLOR_CODE"].encode().decode("unicode_escape")
+)
 ascii_ramp = str(config["ascii_ramps"]["ASCII_RAMP_1"])
 aspect_correction = float(config["terminal"]["ASPECT_CORRECTION"])
 
@@ -18,7 +22,7 @@ terminal_width = terminal_size.columns
 ascii_art_width = terminal_width
 
 ramp_len = len(ascii_ramp) - 1
-ascii_lookup = np.full(256, '', dtype='U')
+ascii_lookup = np.full(256, "", dtype="U")
 
 
 def redraw_screen():
@@ -45,7 +49,7 @@ def frame_to_terminal_ascii(gray_image):
     ascii_image_str = "\n".join(all_rows)
     ascii_image = green_color_code + ascii_image_str + default_color_code
     print(ascii_image)
-    
+
 
 def matrix():
     try:
@@ -67,16 +71,18 @@ def matrix():
                 scale = ascii_art_width / original_width
                 ascii_art_height = int(original_height * scale * aspect_correction)
 
-                resized_frame = cv2.resize(gray_frame, (ascii_art_width, ascii_art_height))
+                resized_frame = cv2.resize(
+                    gray_frame, (ascii_art_width, ascii_art_height)
+                )
 
                 frame_to_terminal_ascii(resized_frame)
 
                 redraw_screen()
 
                 # for test
-                #cv2.imshow('cam capture', gray_frame)
-                #if cv2.waitKey(1) == ord('q'):
-                    #break
+                # cv2.imshow('cam capture', gray_frame)
+                # if cv2.waitKey(1) == ord('q'):
+                # break
 
     except KeyboardInterrupt:
         print("Exiting matrix..")
@@ -84,7 +90,7 @@ def matrix():
         cap.release()
         cv2.destroyAllWindows()
         clear_screen()
-        
+
 
 if __name__ == "__main__":
     create_lookup_table()
