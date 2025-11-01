@@ -76,13 +76,7 @@ def matrix():
                 )
 
                 frame_to_terminal_ascii(resized_frame)
-
                 redraw_screen()
-
-                # for test
-                # cv2.imshow('cam capture', gray_frame)
-                # if cv2.waitKey(1) == ord('q'):
-                # break
 
     except KeyboardInterrupt:
         print("Exiting matrix..")
