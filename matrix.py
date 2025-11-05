@@ -5,6 +5,7 @@ import shutil
 import numpy as np
 from time import sleep
 
+
 config = configparser.ConfigParser(interpolation=None)
 config.read("config.ini")
 
@@ -80,6 +81,7 @@ def matrix():
 
     except KeyboardInterrupt:
         print("Exiting matrix..")
+
     finally:
         cap.release()
         cv2.destroyAllWindows()
