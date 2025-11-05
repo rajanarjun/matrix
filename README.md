@@ -21,3 +21,7 @@ pip install -r requirements.txt
 ```python
 python3 matrix.py
 ```
+
+The program will start capturing live video from your webcam and render it as ASCII characters directly in your terminal.
+
+Press Ctrl + C at any time to safely quit the program, this will stop the video feed, release the camera, and clear the terminal screen.
